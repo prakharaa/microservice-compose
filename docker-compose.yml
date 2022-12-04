@@ -1,0 +1,139 @@
+version: "3.8"
+
+services:
+
+  ui.web:
+    build:
+      context: .
+      dockerfile: GloboTicket.Client/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=http://+:80
+      - ApiConfigs__EventCatalog__Uri=http://localhost:${PORT_ECATALOG}
+      - ApiConfigs__ShoppingBasket__Uri=http://localhost:${PORT_SBASKET}
+      - ApiConfigs__Order__Uri=http://localhost:${PORT_ORDER}
+      - ApiConfigs__Marketing__Uri=http://localhost:${PORT_MARKETING}
+      - ApiConfigs__Discount__Uri=http://localhost:${PORT_DISCOUNT}
+    ports:
+      - "${PORT_UI}:80"
+    depends_on:
+      - sql.GloboTicket
+      - api.discount
+      - api.eventcatalog
+      - api.sbasket
+      - api.marketing
+      - api.payment
+      - ext.paymentgateway
+
+  api.discount:
+    build:
+      context: .
+      dockerfile: GloboTicket.Services.Discount/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${SQLSERVER};database=DiscountDB;User Id=${SQLUSR};Password=${SQLPASSWD};TrustServerCertificate=True
+    depends_on:
+      - sql.GloboTicket
+    ports:
+      - "${PORT_DISCOUNT}:80"
+
+  api.eventcatalog:
+    build:
+      context: .
+      dockerfile: GloboTicket.Services.EventCatalog/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${SQLSERVER};database=EventCatalogDB;User Id=${SQLUSR};Password=${SQLPASSWD};TrustServerCertificate=True
+    depends_on:
+      - sql.GloboTicket
+    ports:
+      - "${PORT_ECATALOG}:80"
+  
+  api.sbasket:
+    build:
+      context: .
+      dockerfile: GloboTicket.Services.ShoppingBasket/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${SQLSERVER};database=SBasketDB;User Id=${SQLUSR};Password=${SQLPASSWD};TrustServerCertificate=True
+    depends_on:
+      - sql.GloboTicket
+      - api.eventcatalog
+      - api.discount
+    ports:
+      - "${PORT_SBASKET}:80"
+
+  api.order:
+    build:
+      context: .
+      dockerfile: GloboTicket.Services.Order/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${SQLSERVER};database=SBasketDB;User Id=${SQLUSR};Password=${SQLPASSWD};TrustServerCertificate=True
+      - ServiceBusConnectionString=${SB_CONN_STR}
+    depends_on:
+      - sql.GloboTicket
+    ports:
+      - "${PORT_ORDER}:80"
+
+  api.marketing:
+    build:
+      context: .
+      dockerfile: GloboTicket.Services.Marketing/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${SQLSERVER};database=MarketingDB;User Id=${SQLUSR};Password=${SQLPASSWD};TrustServerCertificate=True
+    depends_on:
+      - sql.GloboTicket
+      - api.sbasket
+    ports:
+      - "${PORT_MARKETING}:80"
+
+  api.payment:
+    build:
+      context: .
+      dockerfile: GloboTicket.Services.Payment/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=http://+:80
+      - ServiceBusConnectionString=${SB_CONN_STR}
+      - ApiConfigs__ExternalPaymentGateway__Uri=http://localhost:${PORT_EXT_PAYGW}
+    depends_on:
+      - ext.paymentgateway
+    ports:
+      - "${PORT_PAYMENT}:80"
+
+  sql.GloboTicket:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "${SQLPASSWD}"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - "${DB_VOLUMN_LOCAL_PATH}:/var/opt/mssql/data"
+  
+  ext.paymentgateway:
+    build:
+      context: .
+      dockerfile: External.PaymentGateway/Dockerfile
+    ports:
+      - "${PORT_EXT_PAYGW}:80"
+
+
+
+#   api.discount:
+#     build:
+#       context: .
+#       dockerfile: GloboTicket.Services.Discount/Dockerfile
+#     environment:
+#       - ASPNETCORE_ENVIRONMENT=Development
+#       - ASPNETCORE_URLS=http://+:80
+# ##      - ASPNETCORE_URLS=https://+:443;http://+:80
+# ##      - ASPNETCORE_HTTPS_PORT=44302
+#       - ConnectionStrings__DefaultConnection=Server=${SQLSERVER};database=DiscountDB;User Id=${SQLUSR};Password=${SQLPASSWD};TrustServerCertificate=True
