@@ -62,7 +62,7 @@ namespace GloboTicket.Services.Ordering
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
 
             app.UseRouting();

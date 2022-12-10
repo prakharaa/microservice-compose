@@ -65,7 +65,7 @@ namespace GloboTicket.Services.ShoppingBasket
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseSwagger();
 

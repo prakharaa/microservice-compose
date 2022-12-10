@@ -58,7 +58,7 @@ namespace GloboTicket.Services.Marketing
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 

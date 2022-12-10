@@ -39,7 +39,7 @@ namespace GloboTicket.Services.Payment
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 

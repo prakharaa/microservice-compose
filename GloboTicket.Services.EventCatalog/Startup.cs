@@ -48,7 +48,7 @@ namespace GloboTicket.Services.EventCatalog
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseSwagger();
 
