@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using System;
 
 namespace GloboTicket.Services.Payment
@@ -29,6 +30,11 @@ namespace GloboTicket.Services.Payment
             services.AddSingleton<IMessageBus, AzServiceBusMessageBus>();
 
             services.AddControllers();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Internal Payment Gateway API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +50,13 @@ namespace GloboTicket.Services.Payment
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Internal Payment Gateway API V1");
+            });
 
             app.UseEndpoints(endpoints =>
             {

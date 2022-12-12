@@ -9,11 +9,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=http://+:80
-      - ApiConfigs__EventCatalog__Uri=http://localhost:${PORT_ECATALOG}
-      - ApiConfigs__ShoppingBasket__Uri=http://localhost:${PORT_SBASKET}
-      - ApiConfigs__Order__Uri=http://localhost:${PORT_ORDER}
-      - ApiConfigs__Marketing__Uri=http://localhost:${PORT_MARKETING}
-      - ApiConfigs__Discount__Uri=http://localhost:${PORT_DISCOUNT}
+      - ApiConfigs__EventCatalog__Uri=http://${HOST_ADDRESS}:${PORT_ECATALOG}
+      - ApiConfigs__ShoppingBasket__Uri=http://${HOST_ADDRESS}:${PORT_SBASKET}
+      - ApiConfigs__Order__Uri=http://${HOST_ADDRESS}:${PORT_ORDER}
+      - ApiConfigs__Marketing__Uri=http://${HOST_ADDRESS}:${PORT_MARKETING}
+      - ApiConfigs__Discount__Uri=http://${HOST_ADDRESS}:${PORT_DISCOUNT}
     ports:
       - "${PORT_UI}:80"
     depends_on:
@@ -58,6 +58,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=http://+:80
+      - ApiConfigs__EventCatalog__Uri=http://${HOST_ADDRESS}:${PORT_ECATALOG}
+      - ApiConfigs__Discount__Uri=http://${HOST_ADDRESS}:${PORT_DISCOUNT}
       - ConnectionStrings__DefaultConnection=Server=${SQLSERVER};database=SBasketDB;User Id=${SQLUSR};Password=${SQLPASSWD};TrustServerCertificate=True
     depends_on:
       - sql.GloboTicket
@@ -87,6 +89,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=http://+:80
+      - ApiConfigs__ShoppingBasket__Uri=http://${HOST_ADDRESS}:${PORT_SBASKET}
       - ConnectionStrings__DefaultConnection=Server=${SQLSERVER};database=MarketingDB;User Id=${SQLUSR};Password=${SQLPASSWD};TrustServerCertificate=True
     depends_on:
       - sql.GloboTicket
@@ -102,7 +105,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=http://+:80
       - ServiceBusConnectionString=${SB_CONN_STR}
-      - ApiConfigs__ExternalPaymentGateway__Uri=http://localhost:${PORT_EXT_PAYGW}
+      - ApiConfigs__ExternalPaymentGateway__Uri=http://${HOST_ADDRESS}:${PORT_EXT_PAYGW}
     depends_on:
       - ext.paymentgateway
     ports:
