@@ -8,8 +8,24 @@ To deploy existing .Net Core microservices to `docker` and then using `docker-co
 - Docker Desktop 4.14.1 (91661)
 - Visual Studio 2019
 
+## Intructions
 
-## Issues encountered:
+- Start Docker Desktop
+- Execute below command from commands prompt from the root directory
+
+    ```console
+    docker-compose build
+    docker-compose up
+    ```
+    Once done, clear the containers with below command
+
+    ```console
+    docker-compose down
+    ```
+
+## Dev Notes:
+
+### Issues encountered:
 
 - Issue 1: `Failed to compute cache key: ".csproj" not found` while running docker-compose build, 
     - https://stackoverflow.com/questions/66933949/failed-to-compute-cache-key-csproj-not-found
@@ -27,10 +43,17 @@ To deploy existing .Net Core microservices to `docker` and then using `docker-co
 
 - Issue 4: Can't reach sql.discount DB from SSMS (outside of api.discount docker container)
 
-## Done:
+### Done:
 - Use mssql server container for database and mount volumn
 - Start other services with DB dependencies and start using Az Message Bus
 - Provide config details from compose env file
+- Fixed errors in Payment & Marketing microservices
 
-## TODO:
-- Fix errors in Payment & Marketing microservices
+### TODO:
+- Font files not getting loaded
+    
+    > Failed to load resource: the server responded with a status of 404 (Not Found)     opensans-bold.ttf:1  
+    > Failed to load resource: the server responded with a status of 404 (Not Found)     opensans-regular.ttf:1  
+
+- Configure application to use https: Reference: https://medium.com/@woeterman_94/docker-in-visual-studio-unable-to-configure-https-endpoint-f95727187f5f
+- Use JWT and OpenAuth
