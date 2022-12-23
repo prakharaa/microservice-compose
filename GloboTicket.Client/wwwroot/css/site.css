@@ -1,11 +1,11 @@
 ﻿@font-face {
-    font-family: 'opensans-regular';
-    src: url('../fonts/opensans-regular.ttf') format('truetype');
+    font-family: 'OpenSans-Regular';
+    src: url('../fonts/OpenSans-Regular.ttf') format('truetype');
 }
 
 @font-face {
-    font-family: 'opensans-bold';
-    src: url('../fonts/opensans-bold.ttf') format('truetype');
+    font-family: 'OpenSans-Bold';
+    src: url('../fonts/OpenSans-Bold.ttf') format('truetype');
 }
 
 a {
@@ -17,7 +17,7 @@ a {
     background-color: #51b5b1;
     padding: 10px 25px 10px 25px;
     font-size: 0.9em;
-    font-family: opensans-bold;
+    font-family: OpenSans-Bold;
 }
 
 .filterButton {
@@ -41,14 +41,14 @@ a {
 
 select {
     height: 40px;
-    font-family: opensans-bold;
+    font-family: OpenSans-Bold;
     padding-left: 14px;
     padding-right: 4px;
     margin-right: 20px;
 }
 
 body {
-    font-family: opensans-regular;
+    font-family: OpenSans-Regular;
 }
 
 html {
@@ -75,7 +75,7 @@ html {
 }
 
 .bold {
-    font-family: opensans-bold;
+    font-family: OpenSans-Bold;
 }
 
 .tickets {
