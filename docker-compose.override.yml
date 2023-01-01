@@ -1,0 +1,100 @@
+version: '3.4'
+
+services:
+
+  globoticket.web:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ApiConfigs__EventCatalog__Uri=http://${HOST_ADDRESS}:${PORT_ECATALOG}
+      - ApiConfigs__ShoppingBasket__Uri=http://${HOST_ADDRESS}:${PORT_SBASKET}
+      - ApiConfigs__Order__Uri=http://${HOST_ADDRESS}:${PORT_ORDER}
+      - ApiConfigs__Marketing__Uri=http://${HOST_ADDRESS}:${PORT_MARKETING}
+      - ApiConfigs__Discount__Uri=http://${HOST_ADDRESS}:${PORT_DISCOUNT}
+    ports:
+      - "${PORT_UI}:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  globoticket.services.discount:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${AzSQLServer};Initial Catalog=DiscountDB;${SQLConnStrCommonPart}
+    ports:
+      - "${PORT_DISCOUNT}:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  globoticket.services.eventcatalog:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${AzSQLServer};Initial Catalog=EventCatalogDB;${SQLConnStrCommonPart}
+    ports:
+      - "${PORT_ECATALOG}:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  globoticket.services.shoppingbasket:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ApiConfigs__EventCatalog__Uri=http://${HOST_ADDRESS}:${PORT_ECATALOG}
+      - ApiConfigs__Discount__Uri=http://${HOST_ADDRESS}:${PORT_DISCOUNT}
+      - ConnectionStrings__DefaultConnection=Server=${AzSQLServer};Initial Catalog=SBasketDB;${SQLConnStrCommonPart}
+    ports:
+      - "${PORT_SBASKET}:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  globoticket.services.ordering:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ConnectionStrings__DefaultConnection=Server=${AzSQLServer};Initial Catalog=SBasketDB;${SQLConnStrCommonPart}
+      - ServiceBusConnectionString=${SB_CONN_STR}
+    ports:
+      - "${PORT_ORDER}:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  globoticket.services.marketing:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ApiConfigs__ShoppingBasket__Uri=http://${HOST_ADDRESS}:${PORT_SBASKET}
+      - ConnectionStrings__DefaultConnection=Server=${AzSQLServer};Initial Catalog=MarketingDB;${SQLConnStrCommonPart}
+    ports:
+      - "${PORT_MARKETING}:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  globoticket.services.payment:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ServiceBusConnectionString=${SB_CONN_STR}
+      - ApiConfigs__ExternalPaymentGateway__Uri=http://${HOST_ADDRESS}:${PORT_EXT_PAYGW}
+    ports:
+      - "${PORT_PAYMENT}:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  external.paymentgateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+    ports:
+      - "${PORT_EXT_PAYGW}:80"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

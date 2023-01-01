@@ -69,3 +69,8 @@ To deploy existing `.Net Core 3.1` microservices as `docker` containers; using `
 - Configure application to use https: Reference: https://medium.com/@woeterman_94/docker-in-visual-studio-unable-to-configure-https-endpoint-f95727187f5f
 - Use JWT and OpenAuth
 - Error at the time of placing the order `Something went wrong placing your order. Please try again.`
+
+
+- docker-compose  -f "F:\GitHub\microservice-compose\docker-compose.yml" -f "F:\GitHub\microservice-compose\docker-compose.override.yml" -f "F:\GitHub\microservice-compose\obj\Docker\docker-compose.vs.debug.g.yml" -p dockercompose3401452746285916942 --ansi never up -d --no-build
+- docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
+- docker-compose -f docker-compose.yml -f docker-compose.override.yml
